@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IFPE 2027</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f4f8;color:#172033}
+header{background:#102c50;color:white;padding:24px 18px}
+header h1{margin:0;color:#fff}
+header p{margin-bottom:0;color:#dce8f5}
+main{max-width:700px;margin:24px auto;padding:0 14px}
+.card{background:white;padding:22px;border-radius:16px;margin-bottom:16px;box-shadow:0 3px 12px #0000000c}
+button{border:0;border-radius:9px;padding:13px 18px;background:#126b48;color:white;font-weight:bold;font-size:16px;cursor:pointer}
+button:disabled{opacity:.5}
+.secondary{background:#e6edf5;color:#172033}
+.timer{font-size:25px;font-weight:bold;color:#126b48}
+.option{display:block;padding:13px;margin:9px 0;border:1px solid #d5dce5;border-radius:9px}
+.option:has(input:checked){background:#e5f4ed;border-color:#168052}
+.option input{margin-right:9px}
+.nav{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0}
+.nav button{padding:9px 12px;background:#e6edf5;color:#172033}
+.nav button.selected{background:#126b48;color:white}
+.hidden{display:none}
+small{color:#64748b}
+</style>
+</head>
+<body>
+<header>
+<h1>IFPE 2027</h1>
+<p>Plataforma de preparação para o processo seletivo</p>
+</header>
+<main>
+<section id="home" class="card">
+<h2>Bem-vindo ao IFPE 2027!</h2>
+<p>Prepare-se com simulados e acompanhe seu desempenho.</p>
+<p><b>Simulado demonstrativo</b></p>
+<ul>
+<li>30 questões</li>
+<li>Alternativas de A a E</li>
+<li>Tempo: 3 horas</li>
+<li>Você pode finalizar antes do tempo acabar</li>
+</ul>
+<button onclick="start()">Começar simulado</button>
+</section>
+
+<section id="exam" class="hidden">
+<div class="card">
+<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+<b id="progress">Questão 1 de 30</b>
+<span class="timer" id="timer">03:00:00</span>
+</div>
+<div class="nav" id="nav"></div>
+</div>
+<div class="card">
+<h2 id="question"></h2>
+<div id="options"></div>
+<div style="display:flex;justify-content:space-between;gap:8px;margin-top:20px">
+<button class="secondary" onclick="move(-1)">Anterior</button>
+<button onclick="move(1)">Próxima</button>
+</div>
+</div>
+<div class="card">
+<button style="background:#a52d2d;width:100%" onclick="finish()">Finalizar prova</button>
+<p><small>Suas respostas só serão corrigidas depois da entrega.</small></p>
+</div>
+</section>
+
+<section id="result" class="card hidden">
+<h2>Prova finalizada!</h2>
+<p id="score"></p>
+<p id="wrong"></p>
+<button onclick="location.reload()">Voltar ao início</button>
+</section>
+</main>
+
+<script>
+const questions = [
+{q:"Quanto é 8 × 7?",o:["54","56","64","48","58"],a:1},
+{q:"Qual é a raiz quadrada de 144?",o:["10","11","12","13","14"],a:2},
+{q:"Resolva: 3x + 6 = 21.",o:["3","4","5","6","7"],a:2},
+{q:"Qual é o resultado de 2³?",o:["4","6","8","9","12"],a:2},
+{q:"Quanto é 25% de 200?",o:["25","40","45","50","75"],a:3},
+{q:"Qual é o sujeito da frase 'Os alunos estudaram'?",o:["Os alunos","Estudaram","Alunos estudaram","Sujeito oculto","Não há sujeito"],a:0},
+{q:"Qual palavra é um substantivo?",o:["Rapidamente","Bonito","Escola","Correr","Feliz"],a:2},
+{q:"Qual é o antônimo de 'escasso'?",o:["Raro","Pouco","Abundante","Pequeno","Limitado"],a:2},
+{q:"Qual sinal encerra uma pergunta direta?",o:["Vírgula","Ponto final","Dois-pontos","Interrogação","Ponto e vírgula"],a:3},
+{q:"Em qual palavra há um ditongo?",o:["Saúde","Pai","Saída","Raiz","Baú"],a:1},
+{q:"Qual órgão é responsável por bombear o sangue?",o:["Pulmão","Coração","Fígado","Rim","Estômago"],a:1},
+{q:"Qual gás as plantas absorvem principalmente na fotossíntese?",o:["Oxigênio","Nitrogênio","Hidrogênio","Gás carbônico","Hélio"],a:3},
+{q:"Qual é a unidade básica dos seres vivos?",o:["Átomo","Molécula","Célula","Tecido","Órgão"],a:2},
+{q:"A água congela, em condições normais, a:",o:["0 °C","10 °C","50 °C","90 °C","100 °C"],a:0},
+{q:"Qual planeta é conhecido como Planeta Vermelho?",o:["Vênus","Marte","Júpiter","Saturno","Mercúrio"],a:1},
+{q:"Em que ano ocorreu a Independência do Brasil?",o:["1500","1789","1822","1888","1889"],a:2},
+{q:"Quem foi o primeiro imperador do Brasil?",o:["Dom Pedro I","Dom Pedro II","Getúlio Vargas","Deodoro da Fonseca","Tiradentes"],a:0},
+{q:"A Lei Áurea foi assinada em:",o:["1822","1850","1888","1889","1930"],a:2},
+{q:"Qual civilização construiu as pirâmides de Gizé?",o:["Romana","Egípcia","Grega","Persa","Fenícia"],a:1},
+{q:"A Proclamação da República no Brasil ocorreu em:",o:["1822","1888","1889","1930","1945"],a:2},
+{q:"Qual é a capital de Pernambuco?",o:["Olinda","Caruaru","Petrolina","Recife","Ipojuca"],a:3},
+{q:"Qual é o maior oceano da Terra?",o:["Atlântico","Índico","Pacífico","Ártico","Antártico"],a:2},
+{q:"O Brasil está localizado principalmente em qual continente?",o:["África","Europa","Ásia","América do Sul","Oceania"],a:3},
+{q:"Qual é o bioma predominante no Sertão nordestino?",o:["Amazônia","Caatinga","Pampa","Pantanal","Mata de Araucárias"],a:1},
+{q:"Qual linha imaginária divide a Terra em hemisférios Norte e Sul?",o:["Trópico de Câncer","Meridiano de Greenwich","Linha do Equador","Trópico de Capricórnio","Círculo Polar"],a:2},
+{q:"Quanto é 3/4 em forma decimal?",o:["0,25","0,50","0,65","0,75","1,25"],a:3},
+{q:"Qual é a área de um quadrado de lado 5 cm?",o:["10 cm²","15 cm²","20 cm²","25 cm²","30 cm²"],a:3},
+{q:"Qual é o próximo número da sequência 2, 4, 8, 16...?",o:["18","20","24","30","32"],a:4},
+{q:"Qual é o resultado de 15 - 3 × 4?",o:["3","12","24","36","48"],a:0},
+{q:"Quantos graus tem a soma dos ângulos internos de um triângulo?",o:["90°","120°","180°","270°","360°"],a:2}
+];
+
+let current=0, answers=Array(30).fill(null), seconds=10800, interval;
+
+function start(){
+ document.getElementById("home").classList.add("hidden");
+ document.getElementById("exam").classList.remove("hidden");
+ buildNav();showQuestion();
+ interval=setInterval(()=>{
+  seconds--;
+  document.getElementById("timer").textContent=
+   String(Math.floor(seconds/3600)).padStart(2,"0")+":"+
+   String(Math.floor(seconds%3600/60)).padStart(2,"0")+":"+
+   String(seconds%60).padStart(2,"0");
+  if(seconds<=0){finish(true)}
+ },1000);
+}
+function buildNav(){
+ const nav=document.getElementById("nav");nav.innerHTML="";
+ questions.forEach((q,i)=>{
+  const b=document.createElement("button");b.textContent=i+1;
+  b.onclick=()=>{current=i;showQuestion()};
+  b.id="nav"+i;nav.appendChild(b);
+ });
+}
+function showQuestion(){
+ const q=questions[current];
+ document.getElementById("progress").textContent=`Questão ${current+1} de 30`;
+ document.getElementById("question").textContent=q.q;
+ const box=document.getElementById("options");box.innerHTML="";
+ q.o.forEach((opt,i)=>{
+  const label=document.createElement("label");label.className="option";
+  label.innerHTML=`<input type="radio" name="answer" value="${i}" ${answers[current]===i?"checked":""}> ${String.fromCharCode(65+i)}) ${opt}`;
+  label.querySelector("input").onchange=()=>{answers[current]=i;updateNav()};
+  box.appendChild(label);
+ });
+ document.querySelectorAll(".nav button").forEach((b,i)=>b.classList.toggle("selected",i===current));
+ updateNav();
+}
+function updateNav(){
+ questions.forEach((q,i)=>{
+  const b=document.getElementById("nav"+i);
+  b.style.background=answers[i]===null?"#e6edf5":"#b9e5ce";
+ });
+}
+function move(n){current=Math.max(0,Math.min(29,current+n));showQuestion()}
+function finish(auto=false){
+ if(!auto&&!confirm("Tem certeza de que deseja finalizar e entregar a prova?"))return;
+ clearInterval(interval);
+ document.getElementById("exam").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ let correct=0,wrong=[];
+ questions.forEach((q,i)=>{
+  if(answers[i]===q.a)correct++;
+  else wrong.push(i+1);
+ });
+ document.getElementById("score").textContent=`Pontuação demonstrativa: ${correct} de 30.`;
+ document.getElementById("wrong").textContent=wrong.length?
+  `Questões erradas ou sem resposta: ${wrong.join(", ")}.`:
+  "Você acertou todas as questões!";
+}
+</script>
+</body>
+</html>
