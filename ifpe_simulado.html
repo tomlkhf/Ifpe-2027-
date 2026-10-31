@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IFPE 2027 — Simulado</title>
+<style>
+:root{--green:#12613e;--dark:#103d2b;--bg:#f2f5f3;--line:#dce5df}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#202923;font-family:Arial,sans-serif;line-height:1.5}
+header{background:var(--dark);color:#fff;padding:22px 16px}
+header .wrap,main{max-width:900px;margin:auto}
+header h1{margin:0;font-size:25px}
+header p{margin:5px 0 0;color:#d9e9df}
+main{padding:16px}
+.panel,.question{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:15px}
+.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#timer{font-size:25px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums}
+button{border:0;border-radius:8px;padding:12px 17px;font-weight:700;font-size:15px;cursor:pointer}
+.primary{background:var(--green);color:#fff}
+.secondary{background:#e7eee9;color:#173c2b}
+button:disabled{opacity:.5;cursor:not-allowed}
+.question h3{margin:0 0 9px;color:var(--green);font-size:17px}
+.question p{margin:8px 0 14px}
+.options{display:grid;gap:8px}
+.option{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.option:has(input:checked){border-color:var(--green);background:#eef7f1}
+.option input{margin-top:4px;accent-color:var(--green)}
+.tag{font-size:12px;color:#607267;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+#result{display:none}
+#result strong{color:var(--green)}
+.small{font-size:13px;color:#637168}
+@media(max-width:520px){main{padding:10px}.panel,.question{padding:14px}header h1{font-size:22px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>IFPE 2027</h1><p>Simulado de preparação • Técnico Integrado</p></div></header>
+<main>
+<section class="panel">
+ <div class="top"><div><div class="tag">Simulado autoral no estilo IFPE</div><h2 style="margin:5px 0">Prova de treinamento</h2><div class="small">30 questões • alternativas A–E • tempo de referência: 3 horas</div></div><div id="timer">03:00:00</div></div>
+ <p class="small">As questões abaixo são inéditas, elaboradas para treino no formato de múltipla escolha. Não são transcrições da prova oficial.</p>
+ <div class="top"><button class="primary" id="start">Iniciar prova</button><button class="secondary" id="finish" disabled>Finalizar prova</button></div>
+ <p class="small" id="status">O cronômetro começa quando você tocar em “Iniciar prova”. Você pode mudar as respostas até finalizar.</p>
+</section>
+<div id="questions"></div>
+<section class="panel" id="result">
+ <h2>Resultado</h2><p id="score"></p><p id="wrong"></p>
+ <button class="secondary" onclick="resetExam()">Refazer simulado</button>
+</section>
+</main>
+<script>
+const data = [
+{area:"Língua Portuguesa",q:"Leia: “A água é um recurso essencial. Por isso, seu uso responsável deve fazer parte do cotidiano de todos.” A expressão “Por isso” estabelece uma relação de:",o:["oposição","conclusão","comparação","condição","explicação de uma palavra"],a:1},
+{area:"Língua Portuguesa",q:"Em “Os estudantes organizaram a feira de ciências”, o sujeito da oração é:",o:["A feira de ciências","Organizaram","Os estudantes","A feira","Ciências"],a:2},
+{area:"Língua Portuguesa",q:"Assinale a frase em que a palavra destacada expressa uma ideia de intensidade.",o:["O laboratório fica **perto** da biblioteca.","A experiência foi **muito** interessante.","Chegaremos **amanhã**.","O aluno respondeu **calmamente**.","Estudamos **porque** haverá prova."],a:1},
+{area:"Língua Portuguesa",q:"Na frase “Embora estivesse cansada, Marina terminou a atividade”, a palavra “Embora” indica:",o:["causa","finalidade","concessão","consequência","adição"],a:2},
+{area:"Língua Portuguesa",q:"Assinale a alternativa com concordância verbal adequada.",o:["Fazem dois anos que estudo aqui.","Houveram muitos participantes.","Existe boas razões para estudar.","Chegaram cedo os candidatos.","A turma de alunos chegaram cedo."],a:3},
+{area:"Língua Portuguesa",q:"Em “O vento sussurrava entre as árvores”, ocorre:",o:["metáfora","personificação","hipérbole","ironia","eufemismo"],a:1},
+{area:"Língua Portuguesa",q:"Qual alternativa apresenta pontuação adequada?",o:["Quando terminou a aula os alunos, saíram.","Quando terminou a aula, os alunos saíram.","Quando, terminou a aula os alunos saíram.","Quando terminou, a aula os alunos saíram.","Quando terminou a aula os alunos saíram,"],a:1},
+{area:"Língua Portuguesa",q:"A finalidade predominante de uma notícia é:",o:["narrar uma história fantástica","defender obrigatoriamente uma opinião pessoal","informar sobre um acontecimento","ensinar uma receita","criar versos com rimas"],a:2},
+{area:"Língua Portuguesa",q:"Em “A cidade acordou cedo”, a expressão produz um sentido figurado porque:",o:["a cidade é apresentada como se fosse uma pessoa","a cidade realmente dorme","o verbo está no futuro","há uma comparação explícita","a frase não possui sujeito"],a:0},
+{area:"Língua Portuguesa",q:"Assinale a alternativa em que todas as palavras estão grafadas corretamente.",o:["excessão, pesquisa, análise","exceção, pesquisa, análise","exceção, pesquiza, análise","excessão, pesquiza, análize","esceção, pesquisa, análize"],a:1},
+{area:"Matemática",q:"Uma mochila custa R$ 160,00 e recebe desconto de 15%. Qual é o preço após o desconto?",o:["R$ 124,00","R$ 132,00","R$ 136,00","R$ 140,00","R$ 145,00"],a:2},
+{area:"Matemática",q:"Resolva a equação 3x − 7 = 20.",o:["7","8","9","10","11"],a:2},
+{area:"Matemática",q:"Um retângulo tem comprimento 12 cm e largura 7 cm. Sua área é:",o:["19 cm²","38 cm²","72 cm²","84 cm²","96 cm²"],a:3},
+{area:"Matemática",q:"Em uma turma de 40 estudantes, 3/5 participam de um projeto. Quantos estudantes participam?",o:["18","20","22","24","28"],a:3},
+{area:"Matemática",q:"A média aritmética dos números 6, 8, 9 e 13 é:",o:["8","9","9,5","10","11"],a:2},
+{area:"Matemática",q:"Um triângulo tem ângulos internos de 45° e 65°. O terceiro ângulo mede:",o:["60°","65°","70°","75°","80°"],a:2},
+{area:"Matemática",q:"Se 4 cadernos custam R$ 36,00, mantendo o mesmo preço por unidade, quanto custam 7 cadernos?",o:["R$ 54,00","R$ 60,00","R$ 63,00","R$ 66,00","R$ 72,00"],a:2},
+{area:"Matemática",q:"A expressão (x + 3)(x − 3) é equivalente a:",o:["x² + 9","x² − 9","x² − 6x + 9","x² + 6x + 9","2x − 9"],a:1},
+{area:"Matemática",q:"Uma caixa em forma de cubo possui aresta de 4 cm. Qual é seu volume?",o:["16 cm³","32 cm³","48 cm³","64 cm³","96 cm³"],a:3},
+{area:"Matemática",q:"Em um mapa, 1 cm representa 5 km. Uma distância de 7,2 cm no mapa corresponde a:",o:["12 km","25 km","30 km","35 km","36 km"],a:4},
+{area:"Ciências da Natureza",q:"Durante a fotossíntese, as plantas utilizam principalmente água e gás carbônico para produzir:",o:["glicose e oxigênio","nitrogênio e água","proteínas e gás nitrogênio","sais minerais e gás carbônico","apenas energia térmica"],a:0},
+{area:"Ciências da Natureza",q:"Qual transformação de energia ocorre principalmente em uma lâmpada acesa?",o:["química em nuclear","elétrica em luminosa e térmica","térmica em sonora","mecânica em química","luminosa em elétrica"],a:1},
+{area:"Ciências da Natureza",q:"A passagem da água do estado líquido para o gasoso, lentamente e pela superfície, é chamada de:",o:["fusão","solidificação","condensação","evaporação","sublimação"],a:3},
+{area:"Ciências da Natureza",q:"Em uma cadeia alimentar, os organismos produtores são, em geral:",o:["fungos decompositores","animais carnívoros","plantas e algas que produzem matéria orgânica","animais herbívoros","bactérias que consomem restos"],a:2},
+{area:"História",q:"A chegada dos portugueses ao território que hoje corresponde ao Brasil ocorreu em:",o:["1492","1500","1530","1549","1822"],a:1},
+{area:"História",q:"A Lei Áurea, assinada em 1888, determinou:",o:["a proclamação da República","o início da colonização","o fim legal da escravidão no Brasil","a independência do Brasil","a criação do voto feminino"],a:2},
+{area:"História",q:"A Revolução Industrial, iniciada na Inglaterra no século XVIII, foi marcada principalmente:",o:["pela expansão do trabalho artesanal doméstico sem máquinas","pela substituição gradual da produção manual pela produção mecanizada","pelo fim das cidades","pela redução do comércio internacional","pelo retorno ao feudalismo"],a:1},
+{area:"Geografia",q:"O movimento de rotação da Terra está relacionado principalmente:",o:["às estações do ano","à sucessão dos dias e das noites","às fases da Lua","às marés","à formação das montanhas"],a:1},
+{area:"Geografia",q:"A região brasileira que possui a maior extensão territorial é:",o:["Sul","Sudeste","Centro-Oeste","Nordeste","Norte"],a:4},
+{area:"Geografia",q:"O processo de crescimento da população urbana e expansão das cidades é chamado de:",o:["industrialização rural","desertificação","urbanização","reflorestamento","êxodo pendular"],a:2}
+];
+const letters=["A","B","C","D","E"];
+const root=document.getElementById("questions");
+let chosen={};let started=false;let ended=false;let endAt=0;let tick;
+data.forEach((item,i)=>{
+ const section=document.createElement("section");section.className="question";
+ section.innerHTML=`<div class="tag">${item.area}</div><h3>Questão ${i+1}</h3><p>${item.q}</p><div class="options">${item.o.map((v,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}"> <b>${letters[j]})</b> <span>${v}</span></label>`).join("")}</div>`;
+ root.appendChild(section);
+ section.querySelectorAll("input").forEach(inp=>inp.addEventListener("change",()=>{chosen[i]=Number(inp.value)}));
+});
+const timer=document.getElementById("timer"),startBtn=document.getElementById("start"),finishBtn=document.getElementById("finish");
+function displayTime(){let left=Math.max(0,endAt-Date.now());let h=Math.floor(left/3600000),m=Math.floor(left%3600000/60000),s=Math.floor(left%60000/1000);timer.textContent=[h,m,s].map(n=>String(n).padStart(2,"0")).join(":");if(left===0&&!ended)submit();}
+function start(){if(started||ended)return;started=true;endAt=Date.now()+3*60*60*1000;startBtn.disabled=true;finishBtn.disabled=false;document.getElementById("status").textContent="Prova em andamento. Você pode alterar suas respostas até finalizar.";displayTime();tick=setInterval(displayTime,1000);}
+function submit(){if(ended)return;ended=true;clearInterval(tick);document.querySelectorAll("input").forEach(x=>x.disabled=true);finishBtn.disabled=true;let hits=0,wrong=[];data.forEach((q,i)=>{if(chosen[i]===q.a)hits++;else wrong.push(i+1)});document.getElementById("score").innerHTML=`Você acertou <strong>${hits} de ${data.length}</strong> questões.`;document.getElementById("wrong").textContent="Questões que você errou ou deixou em branco: "+(wrong.length?wrong.join(", "):"nenhuma")+". O gabarito não é exibido nesta tela.";document.getElementById("result").style.display="block";document.getElementById("result").scrollIntoView({behavior:"smooth"});document.getElementById("status").textContent="Prova finalizada.";}
+function resetExam(){location.reload();}
+startBtn.addEventListener("click",start);finishBtn.addEventListener("click",()=>{if(confirm("Deseja finalizar a prova?"))submit();});
+</script>
+</body>
+</html>
