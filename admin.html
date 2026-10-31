@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administração | IFPE 2027</title>
+<style>
+:root{--green:#145b3b;--dark:#103d2b;--bg:#f2f5f3;--line:#dce5df}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#202923}
+header{background:var(--dark);color:#fff;padding:20px 16px}
+.wrap{max-width:1000px;margin:auto}
+header h1{margin:0;font-size:24px}
+header p{margin:5px 0 0;color:#d9e9df}
+main{max-width:1000px;margin:auto;padding:16px}
+.notice{background:#fff8df;border:1px solid #ead99a;border-radius:10px;padding:13px;margin-bottom:15px;font-size:14px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+nav button,.btn{border:0;border-radius:8px;padding:11px 14px;font-weight:700;cursor:pointer}
+nav button{background:#e2ebe5;color:#17452f}
+nav button.active,.btn{background:var(--green);color:white}
+.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.metric{background:#f6f9f7;border:1px solid var(--line);border-radius:10px;padding:15px}
+.metric strong{display:block;font-size:27px;color:var(--green)}
+.metric span{font-size:13px;color:#607168}
+h2{font-size:20px;margin:0 0 12px}
+h3{font-size:16px;margin:0 0 8px}
+.muted{color:#65736b;font-size:14px;line-height:1.5}
+label{display:block;font-size:14px;font-weight:700;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd8cf;border-radius:8px;font:inherit;background:white}
+textarea{min-height:90px;resize:vertical}
+.btn{margin-top:12px;font-size:14px}
+.secondary{background:#e6eee9;color:#17452f}
+.tab{display:none}.tab.active{display:block}
+.empty{padding:18px;background:#f6f9f7;border:1px dashed #c8d6cd;border-radius:9px;color:#627168}
+#quizList{padding-left:20px}
+@media(max-width:650px){.grid{grid-template-columns:1fr 1fr}main{padding:10px}.panel{padding:14px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>IFPE 2027 — Administração</h1><p>Painel de controle do projeto</p></div></header>
+<main>
+<div class="notice"><b>Versão inicial de demonstração:</b> esta página ainda não recebe dados dos alunos. As informações só serão compartilhadas entre usuários depois da conexão com um banco de dados e autenticação segura. Não cadastre senhas nem dados pessoais reais nesta versão.</div>
+<nav>
+<button class="active" data-tab="overview">Visão geral</button>
+<button data-tab="students">Alunos</button>
+<button data-tab="performance">Desempenho</button>
+<button data-tab="quizzes">Simulados</button>
+<button data-tab="key">Gabarito</button>
+</nav>
+
+<section class="tab active" id="overview">
+<div class="grid">
+<div class="metric"><strong id="studentsCount">—</strong><span>Alunos cadastrados</span></div>
+<div class="metric"><strong id="attemptsCount">—</strong><span>Provas realizadas</span></div>
+<div class="metric"><strong id="averageCount">—</strong><span>Média geral</span></div>
+</div>
+<div class="panel" style="margin-top:15px">
+<h2>Resumo da turma</h2>
+<div class="empty">Ainda não há resultados conectados. Quando o banco de dados estiver configurado, os indicadores da turma aparecerão aqui.</div>
+</div>
+</section>
+
+<section class="tab" id="students">
+<div class="panel">
+<h2>Alunos</h2>
+<p class="muted">A lista será preenchida automaticamente quando os alunos criarem suas contas na plataforma.</p>
+<div class="empty">Nenhum aluno conectado ainda.</div>
+</div>
+</section>
+
+<section class="tab" id="performance">
+<div class="panel">
+<h2>Desempenho e dificuldades</h2>
+<p class="muted">O painel poderá agrupar os erros por matéria, assunto, questão e aluno, para ajudar a identificar onde a turma precisa reforçar os estudos.</p>
+<div class="empty">Os gráficos de desempenho aparecerão após a chegada dos primeiros resultados.</div>
+</div>
+</section>
+
+<section class="tab" id="quizzes">
+<div class="panel">
+<h2>Criar simulado</h2>
+<p class="muted">Nesta versão, o formulário salva uma lista de rascunhos apenas neste navegador. A publicação para todos os alunos será ativada após a conexão do banco de dados.</p>
+<label for="quizName">Nome do simulado</label>
+<input id="quizName" placeholder="Ex.: Simulado de Matemática 01">
+<label for="quizDescription">Descrição</label>
+<textarea id="quizDescription" placeholder="Conteúdo e orientações do simulado"></textarea>
+<label for="quizTime">Duração (minutos)</label>
+<input id="quizTime" type="number" min="1" value="180">
+<button class="btn" id="saveQuiz">Salvar rascunho</button>
+<h3 style="margin-top:20px">Rascunhos neste dispositivo</h3>
+<ul id="quizList"><li class="muted">Nenhum rascunho salvo.</li></ul>
+</div>
+</section>
+
+<section class="tab" id="key">
+<div class="panel">
+<h2>Liberação do gabarito</h2>
+<p class="muted">O gabarito deve ficar armazenado no servidor e só ser disponibilizado aos alunos quando você autorizar. Não coloque respostas secretas no HTML público.</p>
+<div class="empty">Controle de liberação ainda não conectado. Será configurado junto ao banco de dados e às permissões de administrador.</div>
+</div>
+</section>
+</main>
+<script>
+document.querySelectorAll("nav button").forEach(button=>{
+ button.addEventListener("click",()=>{
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  button.classList.add("active");
+  document.getElementById(button.dataset.tab).classList.add("active");
+ });
+});
+const list=document.getElementById("quizList");
+let drafts=JSON.parse(localStorage.getItem("ifpeAdminDrafts")||"[]");
+function renderDrafts(){
+ list.innerHTML="";
+ if(!drafts.length){list.innerHTML='<li class="muted">Nenhum rascunho salvo.</li>';return;}
+ drafts.forEach(d=>{
+  const li=document.createElement("li");
+  li.textContent=d.name+" — "+d.minutes+" min";
+  list.appendChild(li);
+ });
+}
+document.getElementById("saveQuiz").addEventListener("click",()=>{
+ const name=document.getElementById("quizName").value.trim();
+ const minutes=Number(document.getElementById("quizTime").value);
+ if(!name||!Number.isFinite(minutes)||minutes<1){alert("Informe um nome e uma duração válida.");return;}
+ drafts.push({name,description:document.getElementById("quizDescription").value,minutes});
+ localStorage.setItem("ifpeAdminDrafts",JSON.stringify(drafts));
+ document.getElementById("quizName").value="";
+ document.getElementById("quizDescription").value="";
+ renderDrafts();
+ alert("Rascunho salvo neste dispositivo.");
+});
+renderDrafts();
+</script>
+</body>
+</html>
