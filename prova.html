@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IFPE 2027 | Provas anteriores</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f4f2;color:#202820;font-family:Arial,sans-serif}
+header{background:#123c2b;color:white;padding:22px}
+header h1{margin:0}
+main{max-width:900px;margin:auto;padding:15px}
+.card{background:white;padding:18px;border-radius:12px;margin:15px 0}
+button{background:#176b43;color:white;border:0;padding:13px 18px;border-radius:8px;font-size:16px}
+button:disabled{opacity:.5}
+#timer{font-size:27px;font-weight:bold;color:#176b43}
+iframe{width:100%;height:65vh;border:1px solid #ddd;border-radius:8px}
+.answers{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+.answers label{background:#eef2ef;padding:12px;text-align:center;border-radius:8px}
+.small{font-size:13px;color:#666}
+</style>
+</head>
+<body>
+
+<header>
+<h1>IFPE 2027</h1>
+<p>Plataforma de preparação • Provas anteriores</p>
+</header>
+
+<main>
+<section class="card">
+<h2>IFPE 2026.1</h2>
+<p>Simulado baseado na prova oficial de Técnico Integrado.</p>
+<p><b>30 questões | Tempo de referência: 3 horas</b></p>
+<div id="timer">03:00:00</div>
+<button id="start">Iniciar prova</button>
+<button id="finish" disabled>Finalizar prova</button>
+<p class="small">O cronômetro começa ao iniciar. Você pode mudar suas respostas até finalizar.</p>
+</section>
+
+<section class="card">
+<h2>Caderno oficial da prova</h2>
+<p>Leia os enunciados e as alternativas diretamente aqui:</p>
+<iframe
+src="https://nyc3.digitaloceanspaces.com/repo/funcern.br/media/documents/INTEGRADO-IFPE-2026.1IMP.pdf">
+</iframe>
+<p><a href="https://nyc3.digitaloceanspaces.com/repo/funcern.br/media/documents/INTEGRADO-IFPE-2026.1IMP.pdf" target="_blank">Abrir PDF oficial</a></p>
+</section>
+
+<section class="card">
+<h2>Folha de respostas</h2>
+<p>Marque uma alternativa para cada questão.</p>
+<div id="questions"></div>
+</section>
+
+<section class="card" id="result" hidden>
+<h2>Prova finalizada!</h2>
+<p id="resultText"></p>
+</section>
+</main>
+
+<script>
+const questions=document.getElementById("questions");
+const timer=document.getElementById("timer");
+const start=document.getElementById("start");
+const finish=document.getElementById("finish");
+const result=document.getElementById("result");
+
+let answers=JSON.parse(localStorage.getItem("ifpeAnswers")||"{}");
+let deadline=Number(localStorage.getItem("ifpeDeadline")||0);
+let finished=localStorage.getItem("ifpeFinished")==="yes";
+let clock;
+
+for(let i=1;i<=30;i++){
+ const div=document.createElement("div");
+ div.className="card";
+ div.innerHTML="<b>Questão "+i+"</b><div class='answers'>"+
+ ["A","B","C","D","E"].map(letter=>
+ "<label><input type='radio' name='q"+i+"' value='"+letter+"' "+
+ (answers[i]===letter?"checked":"")+"> "+letter+"</label>"
+ ).join("")+"</div>";
+ questions.appendChild(div);
+
+ div.querySelectorAll("input").forEach(input=>{
+  input.disabled=finished;
+  input.addEventListener("change",()=>{
+   answers[i]=input.value;
+   localStorage.setItem("ifpeAnswers",JSON.stringify(answers));
+  });
+ });
+}
+
+function updateTimer(){
+ let remaining=Math.max(0,deadline-Date.now());
+ let h=Math.floor(remaining/3600000);
+ let m=Math.floor((remaining%3600000)/60000);
+ let s=Math.floor((remaining%60000)/1000);
+ timer.textContent=[h,m,s].map(n=>String(n).padStart(2,"0")).join(":");
+ if(remaining===0&&!finished)submit();
+}
+
+function begin(){
+ if(finished)return;
+ if(!deadline){
+  deadline=Date.now()+10800000;
+  localStorage.setItem("ifpeDeadline",deadline);
+ }
+ start.disabled=true;
+ finish.disabled=false;
+ updateTimer();
+ clock=setInterval(updateTimer,1000);
+}
+
+function submit(){
+ if(finished)return;
+ finished=true;
+ clearInterval(clock);
+ localStorage.setItem("ifpeFinished","yes");
+ document.querySelectorAll("input").forEach(x=>x.disabled=true);
+ start.disabled=true;
+ finish.disabled=true;
+
+ const answered=Object.keys(answers).length;
+ result.hidden=false;
+ document.getElementById("resultText").innerHTML=
+ "Respostas preenchidas: "+answered+" de 30.<br><br>"+
+ "Sua prova foi encerrada. A correção pelo gabarito oficial será disponibilizada em uma atualização futura.";
+ result.scrollIntoView();
+}
+
+function reset(){
+ if(!confirm("Apagar as respostas e começar novamente?"))return;
+ localStorage.removeItem("ifpeAnswers");
+ localStorage.removeItem("ifpeDeadline");
+ localStorage.removeItem("ifpeFinished");
+ location.reload();
+}
+
+start.addEventListener("click",begin);
+finish.addEventListener("click",()=>{
+ if(confirm("Deseja realmente finalizar a prova?"))submit();
+});
+
+if(finished){
+ start.disabled=true;
+ finish.disabled=true;
+ document.querySelectorAll("input").forEach(x=>x.disabled=true);
+ result.hidden=false;
+ document.getElementById("resultText").textContent="Esta prova já foi finalizada neste dispositivo.";
+}else if(deadline){
+ begin();
+}
+</script>
+</body>
+</html>
