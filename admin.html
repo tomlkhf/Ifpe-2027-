@@ -287,13 +287,15 @@ db.auth.onAuthStateChange((event,session)=>{
 });
 
 const params = new URLSearchParams(window.location.search);
+const hashParams = new URLSearchParams(window.location.hash.substring(1));
 
-if (params.get("type") === "recovery") {
+if (params.get("type") === "recovery" || hashParams.get("type") === "recovery") {
   document.getElementById("login").style.display = "block";
   document.getElementById("app").style.display = "none";
   document.getElementById("resetBox").style.display = "block";
 } else {
   checkAdmin();
+}
 }
 </script>
 </body>
