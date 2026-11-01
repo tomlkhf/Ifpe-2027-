@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#075b3c">
+<title>Simulado IFPE 2025.1 — Prova oficial</title>
+<style>
+:root{--green:#075b3c;--green2:#0b7850;--ink:#17231d;--muted:#66736c;--line:#dce5df;--bg:#f3f6f4;--white:#fff;--orange:#e99a27;--red:#b93b36}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input{font:inherit}button{cursor:pointer}.top{background:var(--green);color:white;padding:15px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 10px #1234}
+.brand{font-weight:800;letter-spacing:.2px}.brand small{display:block;font-weight:500;font-size:11px;opacity:.8;margin-top:2px}.timer{font-weight:800;font-variant-numeric:tabular-nums;background:#ffffff20;padding:9px 13px;border-radius:10px;white-space:nowrap}
+.wrap{max-width:1120px;margin:22px auto;padding:0 14px;display:grid;grid-template-columns:245px minmax(0,1fr);gap:18px}.side,.main{background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 12px #153a1b0a}.side{padding:16px;height:max-content;position:sticky;top:82px}.side h3{font-size:14px;margin:0 0 12px}.progress{height:8px;border-radius:20px;background:#e7eee9;overflow:hidden;margin:6px 0 15px}.progress>div{height:100%;width:0;background:var(--green2);transition:width .2s}.gridq{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.qnav{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 0;font-weight:700;color:var(--ink)}.qnav.done{background:#e3f3e9;border-color:#8fc5a3;color:var(--green)}.qnav.current{outline:2px solid var(--green);outline-offset:1px}.legend{font-size:11px;color:var(--muted);line-height:1.65;margin-top:14px}.dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}.main{padding:clamp(15px,3vw,28px);min-width:0}.subject{color:var(--green2);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:1px}.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:6px 0 12px}.heading h1{font-size:clamp(21px,3vw,29px);margin:0}.muted{color:var(--muted);font-size:13px}.tag{border:1px solid var(--line);border-radius:50px;padding:6px 10px;font-size:12px;color:var(--muted);white-space:nowrap}.reference{margin:14px 0}.reference summary{cursor:pointer;color:var(--green);font-weight:700;font-size:13px;padding:9px 0}.pagebox{border:1px solid var(--line);background:#f8faf8;border-radius:12px;padding:10px;margin:8px 0 15px}.pagebox img{width:100%;height:auto;display:block;border-radius:5px;background:white;cursor:zoom-in}.pagecaption{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:11px;margin:0 0 8px}.choice-title{font-weight:800;margin:19px 0 9px}.choices{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.choice{border:1.5px solid var(--line);border-radius:11px;min-height:54px;background:white;font-weight:800;color:var(--ink);transition:.15s}.choice:hover{border-color:var(--green2)}.choice.selected{background:#e7f4eb;border-color:var(--green);color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}.actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:24px}.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:800}.primary{background:var(--green);color:white}.secondary{background:#edf2ee;color:var(--ink)}.finish{background:#fff0df;color:#764400}.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:12px}.welcome{max-width:640px;margin:6vh auto;padding:24px}.welcome .main{padding:clamp(20px,5vw,40px)}.welcome h1{font-size:28px;margin:0 0 8px}.welcome ul{padding-left:20px;line-height:1.8}.field{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin:10px 0 16px}.hidden{display:none!important}.modal{position:fixed;inset:0;background:#08140edb;z-index:30;display:flex;align-items:center;justify-content:center;padding:15px}.modalcard{background:#fff;border-radius:16px;max-width:650px;width:100%;max-height:90vh;overflow:auto;padding:22px}.resultline{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}.zoomimg{max-width:96vw;max-height:88vh;object-fit:contain;background:#fff;border-radius:8px}.status{font-size:13px;padding:11px 13px;border-radius:10px;background:#eef5f0;color:#27583d;margin:10px 0}.status.error{background:#fff0ef;color:#9d2f2a}.loading{padding:28px;text-align:center;color:var(--muted)}.foot{font-size:11px;color:var(--muted);text-align:center;padding:22px}.smalllink{color:var(--green);font-weight:700}
+@media(max-width:760px){.wrap{grid-template-columns:1fr;margin:12px auto}.side{position:static;order:2}.main{order:1}.gridq{grid-template-columns:repeat(10,1fr)}.choices{gap:6px}.choice{min-height:48px}.top{padding:12px}.brand{font-size:14px}.timer{font-size:13px;padding:8px}}
+</style>
+</head>
+<body>
+<div id="welcome" class="welcome">
+  <div class="main">
+    <div class="subject">Preparação IFPE 2027</div>
+    <h1>Simulado com a prova oficial IFPE 2025.1</h1>
+    <p class="muted">Caderno de Cursos Técnicos Integrados — Edital REI/IFPE nº 52/2024.</p>
+    <ul>
+      <li>30 questões originais da prova aplicada em 19/01/2025.</li>
+      <li>Tempo de prova: 3 horas.</li>
+      <li>As páginas do caderno serão exibidas como imagens dentro do simulado.</li>
+      <li>Alternativas A–E clicáveis, navegação e cartão-resposta.</li>
+      <li>Correção pelo gabarito definitivo após finalizar.</li>
+    </ul>
+    <label for="studentName"><b>Nome do estudante</b></label>
+    <input id="studentName" class="field" maxlength="80" placeholder="Digite seu nome">
+    <div id="loadStatus" class="status">Ao iniciar, o simulado vai carregar o caderno oficial diretamente da FUNCERN.</div>
+    <button id="startBtn" class="btn primary" style="width:100%">Carregar prova e iniciar</button>
+    <p class="note">Seu nome e seu resultado serão registrados para acompanhamento administrativo. Não é necessário informar e-mail.</p>
+    <p class="note"><a class="smalllink" href="https://portal.funcern.org/concursos/ifpe-edital-n-52-53-2024/" target="_blank" rel="noopener">Página oficial da seleção na FUNCERN</a></p>
+  </div>
+</div>
+<div id="exam" class="hidden">
+  <header class="top"><div class="brand">IFPE 2025.1 <small>Simulado oficial • Cursos Integrados</small></div><div id="timer" class="timer">03:00:00</div></header>
+  <div class="wrap">
+    <aside class="side">
+      <h3>Cartão-resposta</h3>
+      <div class="muted" id="answeredText">0 de 30 respondidas</div>
+      <div class="progress"><div id="progressFill"></div></div>
+      <div id="questionGrid" class="gridq"></div>
+      <div class="legend"><span class="dot" style="background:#e3f3e9;border:1px solid #8fc5a3"></span>Respondida<br><span class="dot" style="background:#fff;border:1px solid #ccd8cf"></span>Em branco<br><span class="dot" style="background:#075b3c"></span>Questão atual</div>
+      <button id="finishSide" class="btn finish" style="width:100%;margin-top:16px">Finalizar prova</button>
+    </aside>
+    <main class="main">
+      <div class="heading"><div><div id="subject" class="subject">Língua Portuguesa</div><h1 id="questionTitle">Questão 1 de 30</h1><div id="pageMeta" class="muted">Página 4 do caderno oficial</div></div><span id="questionState" class="tag">Em branco</span></div>
+      <div id="refArea"></div>
+      <div class="pagebox"><div class="pagecaption"><span id="pageCaption">Página original do caderno</span><span>Toque na imagem para ampliar</span></div><div id="pageStatus" class="loading">Preparando imagem da página…</div><img id="questionImage" class="hidden" alt="Imagem da página original da prova IFPE 2025.1"></div>
+      <div class="choice-title">Marque uma alternativa:</div>
+      <div id="choices" class="choices"></div>
+      <div class="actions"><button id="prevBtn" class="btn secondary">← Anterior</button><button id="nextBtn" class="btn primary">Próxima →</button></div>
+      <p class="note">A imagem mostra a página original do caderno; as alternativas clicáveis ficam logo abaixo. Você pode voltar e alterar respostas antes de finalizar.</p>
+    </main>
+  </div>
+  <div class="foot">Prova oficial IFPE 2025.1 • Material para treino • <a class="smalllink" href="https://portal.funcern.org/concursos/ifpe-edital-n-52-53-2024/" target="_blank" rel="noopener">Fonte FUNCERN</a></div>
+</div>
+<div id="resultModal" class="modal hidden"><div class="modalcard"><h2 style="margin-top:0">Resultado do simulado</h2><div id="resultContent"></div><div class="actions"><button id="closeResult" class="btn secondary">Voltar ao cartão</button></div></div></div>
+<div id="zoomModal" class="modal hidden"><img id="zoomImage" class="zoomimg" alt="Página ampliada"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(() => {
+'use strict';
+const SUPABASE_URL='https://kzoslustwdrikaacxppf.supabase.co';
+const SUPABASE_KEY='sb_publishable_KPxVMewF0os51gYtCyhTRQ_vVRYVRRn';
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const PDF_URL='https://portal.funcern.org/documents/1981/CURSOS_TECNICOS_INTEGRADOS.pdf';
+const PDF_FALLBACK='https://arquivos.qconcursos.com/prova/arquivo_prova/127175/funcern-2025-if-pe-vestibular-tecnico-integrado-prova.pdf';
+const KEY=['C','C','C','D','E','A','C','B','D','A','B','C','D','B','D','C','E','A','D','B','A','E','A','D','A','A','E','C','E','D'];
+const qs=Array.from({length:30},(_,i)=>i+1);
+function pageFor(q){if(q===1)return 2;if(q<=5)return 3;if(q<=10)return 4;if(q<=13)return 5;if(q<=17)return 6;if(q<=19)return 7;if(q===20)return 8;if(q<=24)return 9;if(q<=27)return 10;return 11;}
+function subjectFor(q){if(q<=10)return 'Língua Portuguesa';if(q<=20)return 'Matemática';if(q<=24)return 'Biologia';if(q<=27)return 'História';return 'Geografia';}
+function refsFor(q){return [];}
+let answers={},current=1,pdfDoc=null,timerSeconds=10800,timerInterval=null,finished=false,renderCache=new Map(),student='';
+const $=id=>document.getElementById(id);
+function status(msg,error=false){$('loadStatus').textContent=msg;$('loadStatus').classList.toggle('error',error);}
+async function fetchPdf(){
+ const urls=[PDF_URL,PDF_FALLBACK,'https://api.allorigins.win/raw?url='+encodeURIComponent(PDF_URL),'https://corsproxy.io/?url='+encodeURIComponent(PDF_URL)];
+ let last='';
+ for(const url of urls){try{const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const b=await r.arrayBuffer();if(b.byteLength<100000)throw new Error('arquivo recebido incompleto');return new Uint8Array(b);}catch(e){last=e.message;}}
+ throw new Error('Não foi possível buscar o PDF no navegador ('+last+'). Confira a conexão ou tente novamente mais tarde.');
+}
+async function renderPage(pageNumber){
+ if(renderCache.has(pageNumber))return renderCache.get(pageNumber);
+ if(!pdfDoc)throw new Error('O caderno ainda não foi carregado.');
+ const page=await pdfDoc.getPage(pageNumber);const viewport=page.getViewport({scale:1.55});
+ const canvas=document.createElement('canvas');const ctx=canvas.getContext('2d',{alpha:false});canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+ await page.render({canvasContext:ctx,viewport}).promise;
+ const data=canvas.toDataURL('image/jpeg',0.88);renderCache.set(pageNumber,data);canvas.width=1;canvas.height=1;return data;
+}
+async function showPage(pageNumber,imgEl,statusEl){
+ statusEl.classList.remove('hidden');imgEl.classList.add('hidden');statusEl.textContent='Gerando imagem da página '+pageNumber+'…';
+ try{imgEl.src=await renderPage(pageNumber);imgEl.onload=()=>{imgEl.classList.remove('hidden');statusEl.classList.add('hidden');};if(imgEl.complete){imgEl.classList.remove('hidden');statusEl.classList.add('hidden');}}
+ catch(e){statusEl.textContent='Não foi possível renderizar esta página: '+e.message;statusEl.classList.remove('hidden');}
+}
+function buildGrid(){const g=$('questionGrid');g.innerHTML='';qs.forEach(n=>{const b=document.createElement('button');b.className='qnav';b.textContent=n;b.addEventListener('click',()=>go(n));g.appendChild(b);});updateGrid();}
+function updateGrid(){const buttons=$('questionGrid').children;let count=0;qs.forEach((n,i)=>{const b=buttons[i];b.classList.toggle('done',!!answers[n]);b.classList.toggle('current',n===current);if(answers[n])count++;});$('answeredText').textContent=count+' de 30 respondidas';$('progressFill').style.width=(count/30*100)+'%';}
+function renderChoices(){const box=$('choices');box.innerHTML='';['A','B','C','D','E'].forEach(letter=>{const b=document.createElement('button');b.className='choice'+(answers[current]===letter?' selected':'');b.textContent=letter;b.setAttribute('aria-label','Alternativa '+letter);b.addEventListener('click',()=>{answers[current]=letter;saveLocal();renderQuestion();});box.appendChild(b);});}
+function renderReferences(){const area=$('refArea');area.innerHTML='';const refs=refsFor(current);if(!refs.length)return;const details=document.createElement('details');details.className='reference';const summary=document.createElement('summary');summary.textContent='Ver texto(s) de apoio da prova original';details.appendChild(summary);for(const p of refs){const holder=document.createElement('div');holder.className='pagebox';const cap=document.createElement('div');cap.className='pagecaption';cap.textContent='Página '+p+' do caderno — texto de apoio';const img=document.createElement('img');img.alt='Página '+p+' do caderno original';img.loading='lazy';img.addEventListener('click',()=>zoom(img.src));holder.append(cap,img);details.appendChild(holder);summary.addEventListener('click',()=>{setTimeout(()=>{if(!img.src)showPage(p,img,cap);},0);});}area.appendChild(details);}
+function renderQuestion(){const page=pageFor(current);$('subject').textContent=subjectFor(current);$('questionTitle').textContent='Questão '+current+' de 30';$('pageMeta').textContent='Página '+page+' do caderno oficial';$('pageCaption').textContent='Página '+page+' do caderno original • prova IFPE 2025.1';$('questionState').textContent=answers[current]?'Marcada: '+answers[current]:'Em branco';$('prevBtn').disabled=current===1;$('prevBtn').style.opacity=current===1?'.45':'1';$('nextBtn').textContent=current===30?'Revisar e finalizar':'Próxima →';renderChoices();renderReferences();showPage(page,$('questionImage'),$('pageStatus'));updateGrid();}
+function go(n){current=Math.max(1,Math.min(30,n));renderQuestion();window.scrollTo({top:0,behavior:'smooth'});}
+function saveLocal(){try{localStorage.setItem('ifpe2025answers',JSON.stringify(answers));localStorage.setItem('ifpe2025student',student);}catch(e){}}
+function formatTime(sec){const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return [h,m,s].map(x=>String(x).padStart(2,'0')).join(':');}
+function startTimer(){clearInterval(timerInterval);$('timer').textContent=formatTime(timerSeconds);timerInterval=setInterval(()=>{if(finished)return;timerSeconds--; $('timer').textContent=formatTime(timerSeconds);if(timerSeconds<=0){clearInterval(timerInterval);finish(true);}},1000);}
+function finish(auto=false){finished=true;clearInterval(timerInterval);const count=qs.filter(n=>answers[n]).length;let correct=0;qs.forEach(n=>{if(answers[n]===KEY[n-1])correct++;});const wrong=qs.filter(n=>answers[n] && answers[n]!==KEY[n-1]);const blank=qs.filter(n=>!answers[n]);const bySubject=[['Língua Portuguesa',1,10],['Matemática',11,20],['Biologia',21,24],['História',25,27],['Geografia',28,30]];let html='<p class="muted">'+(student?'Estudante: '+escapeHtml(student)+' • ':'')+(auto?'Tempo encerrado. ':'')+'Respostas registradas neste aparelho.</p><div class="resultline"><b>Acertos</b><strong>'+correct+'/30 ('+(correct/30*100).toFixed(1).replace('.',',')+'%)</strong></div><div class="resultline"><b>Respondidas</b><strong>'+count+'/30</strong></div><div class="resultline"><b>Em branco</b><strong>'+(30-count)+'</strong></div><h3>Desempenho por disciplina</h3>';
+ bySubject.forEach(([name,a,b])=>{let c=0;for(let n=a;n<=b;n++)if(answers[n]===KEY[n-1])c++;html+='<div class="resultline"><span>'+name+'</span><strong>'+c+'/'+(b-a+1)+'</strong></div>';});
+ html+='<h3>Questões que você errou</h3>';
+ html+=wrong.length?'<p class="muted">'+wrong.map(n=>'Questão '+n).join(' • ')+'</p>':'<p class="muted">Nenhuma questão errada entre as respondidas.</p>';
+ html+='<h3>Questões em branco</h3>';
+ html+=blank.length?'<p class="muted">'+blank.map(n=>'Questão '+n).join(' • ')+'</p>':'<p class="muted">Você respondeu todas as questões.</p>';
+ $('resultContent').innerHTML=html;$('resultModal').classList.remove('hidden');saveLocal();
+ db.from('access_logs').insert({student_name:student,event_type:'finalizacao',quiz_title:'IFPE 2025.1',score:correct,total_questions:30,wrong_questions:[...wrong,...blank]}).then(({error})=>{if(error)console.error('Não foi possível registrar o resultado:',error.message);});
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function zoom(src){$('zoomImage').src=src;$('zoomModal').classList.remove('hidden');}
+$('zoomModal').addEventListener('click',()=>$('zoomModal').classList.add('hidden'));
+$('prevBtn').addEventListener('click',()=>go(current-1));$('nextBtn').addEventListener('click',()=>{if(current===30){finish(false);}else go(current+1);});$('finishSide').addEventListener('click',()=>finish(false));$('closeResult').addEventListener('click',()=>$('resultModal').classList.add('hidden'));$('questionImage').addEventListener('click',()=>zoom($('questionImage').src));
+$('startBtn').addEventListener('click',async()=>{const enteredName=$('studentName').value.trim();if(enteredName.length<2){status('Digite seu nome (mínimo de 2 caracteres) para iniciar.',true);return;}if(!window.pdfjsLib){status('A biblioteca de leitura do PDF não carregou. Atualize a página e tente novamente.',true);return;}$('startBtn').disabled=true;$('startBtn').textContent='Carregando caderno oficial…';status('Conectando ao caderno oficial da FUNCERN…');try{pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const bytes=await fetchPdf();pdfDoc=await pdfjsLib.getDocument({data:bytes}).promise;if(pdfDoc.numPages!==11)console.warn('Número inesperado de páginas:',pdfDoc.numPages);student=enteredName;const {error:logError}=await db.from('access_logs').insert({student_name:student,event_type:'inicio',quiz_title:'IFPE 2025.1'});if(logError)console.error('Não foi possível registrar o início:',logError.message);$('welcome').classList.add('hidden');$('exam').classList.remove('hidden');buildGrid();renderQuestion();startTimer();}catch(e){status(e.message,true);$('startBtn').disabled=false;$('startBtn').textContent='Tentar carregar novamente';}});
+})();
+</script>
+</body>
+</html>
