@@ -30,6 +30,12 @@ nav{display:flex;flex-wrap:wrap;gap:5px}
 
 <main>
 <section id="login" class="panel">
+ <div id="resetBox" style="display:none">
+  <h2>Definir nova senha</h2>
+  <input id="newPassword" type="password" placeholder="Nova senha">
+  <button onclick="saveNewPassword()">Salvar nova senha</button>
+  <p id="resetMessage"></p>
+</div>
 <h2>Entrar como administrador</h2>
 <input id="email" type="email" placeholder="Seu e-mail">
 <input id="password" type="password" placeholder="Sua senha">
@@ -110,6 +116,24 @@ async function recoverPassword(){
  msg.textContent=error
   ? "Erro: "+error.message
   : "Enviamos um link de recuperação para seu e-mail.";
+}
+ async function saveNewPassword(){
+ const password=document.getElementById("newPassword").value;
+ const msg=document.getElementById("resetMessage");
+
+ if(password.length<8){
+  msg.textContent="A senha deve ter pelo menos 8 caracteres.";
+  return;
+ }
+
+ const {error}=await db.auth.updateUser({password});
+
+ if(error){
+  msg.textContent="Erro: "+error.message;
+  return;
+ }
+
+ msg.textContent="Senha alterada com sucesso!";
 }
 async function checkAdmin(){
  const {data:{user}}=await db.auth.getUser();
