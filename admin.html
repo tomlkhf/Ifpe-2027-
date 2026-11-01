@@ -4,135 +4,248 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Administração | IFPE 2027</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--green:#145b3b;--dark:#103d2b;--bg:#f2f5f3;--line:#dce5df}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#202923}
-header{background:var(--dark);color:#fff;padding:20px 16px}
-.wrap{max-width:1000px;margin:auto}
-header h1{margin:0;font-size:24px}
-header p{margin:5px 0 0;color:#d9e9df}
-main{max-width:1000px;margin:auto;padding:16px}
-.notice{background:#fff8df;border:1px solid #ead99a;border-radius:10px;padding:13px;margin-bottom:15px;font-size:14px}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
-nav button,.btn{border:0;border-radius:8px;padding:11px 14px;font-weight:700;cursor:pointer}
-nav button{background:#e2ebe5;color:#17452f}
-nav button.active,.btn{background:var(--green);color:white}
-.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:15px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.metric{background:#f6f9f7;border:1px solid var(--line);border-radius:10px;padding:15px}
-.metric strong{display:block;font-size:27px;color:var(--green)}
-.metric span{font-size:13px;color:#607168}
-h2{font-size:20px;margin:0 0 12px}
-h3{font-size:16px;margin:0 0 8px}
-.muted{color:#65736b;font-size:14px;line-height:1.5}
-label{display:block;font-size:14px;font-weight:700;margin:12px 0 5px}
-input,select,textarea{width:100%;padding:11px;border:1px solid #cbd8cf;border-radius:8px;font:inherit;background:white}
-textarea{min-height:90px;resize:vertical}
-.btn{margin-top:12px;font-size:14px}
-.secondary{background:#e6eee9;color:#17452f}
+body{margin:0;font-family:Arial;background:#f1f5f2;color:#203027}
+header{background:#103d2b;color:white;padding:20px}
+main{max-width:950px;margin:20px auto;padding:12px}
+.panel{background:white;padding:18px;border-radius:12px;margin:14px 0}
+input,button{padding:12px;border-radius:7px;border:1px solid #ccc;font-size:15px}
+input{width:100%;margin:7px 0}
+button{background:#145b3b;color:white;border:0;cursor:pointer;margin:5px 3px}
+.secondary{background:#e5eee8;color:#145b3b}
+nav{display:flex;flex-wrap:wrap;gap:5px}
 .tab{display:none}.tab.active{display:block}
-.empty{padding:18px;background:#f6f9f7;border:1px dashed #c8d6cd;border-radius:9px;color:#627168}
-#quizList{padding-left:20px}
-@media(max-width:650px){.grid{grid-template-columns:1fr 1fr}main{padding:10px}.panel{padding:14px}}
+.item{padding:12px;border-bottom:1px solid #ddd}
+.small{color:#68766d;font-size:13px}
+#app{display:none}
 </style>
 </head>
 <body>
-<header><div class="wrap"><h1>IFPE 2027 — Administração</h1><p>Painel de controle do projeto</p></div></header>
+<header>
+<h2>IFPE 2027 — Painel administrativo</h2>
+<p>Área exclusiva do administrador</p>
+</header>
+
 <main>
-<div class="notice"><b>Versão inicial de demonstração:</b> esta página ainda não recebe dados dos alunos. As informações só serão compartilhadas entre usuários depois da conexão com um banco de dados e autenticação segura. Não cadastre senhas nem dados pessoais reais nesta versão.</div>
+<section id="login" class="panel">
+<h2>Entrar como administrador</h2>
+<input id="email" type="email" placeholder="Seu e-mail">
+<input id="password" type="password" placeholder="Sua senha">
+<button onclick="login()">Entrar</button>
+<p id="message" class="small"></p>
+</section>
+
+<section id="app">
 <nav>
-<button class="active" data-tab="overview">Visão geral</button>
-<button data-tab="students">Alunos</button>
-<button data-tab="performance">Desempenho</button>
-<button data-tab="quizzes">Simulados</button>
-<button data-tab="key">Gabarito</button>
+<button onclick="showTab('overview')">Visão geral</button>
+<button onclick="showTab('students')">Alunos</button>
+<button onclick="showTab('quizzes')">Simulados</button>
+<button onclick="logout()" class="secondary">Sair</button>
 </nav>
 
-<section class="tab active" id="overview">
-<div class="grid">
-<div class="metric"><strong id="studentsCount">—</strong><span>Alunos cadastrados</span></div>
-<div class="metric"><strong id="attemptsCount">—</strong><span>Provas realizadas</span></div>
-<div class="metric"><strong id="averageCount">—</strong><span>Média geral</span></div>
-</div>
-<div class="panel" style="margin-top:15px">
-<h2>Resumo da turma</h2>
-<div class="empty">Ainda não há resultados conectados. Quando o banco de dados estiver configurado, os indicadores da turma aparecerão aqui.</div>
-</div>
+<section id="overview" class="tab active panel">
+<h2>Visão geral</h2>
+<p>Alunos cadastrados: <strong id="studentCount">—</strong></p>
+<p>Provas realizadas: <strong id="attemptCount">—</strong></p>
 </section>
 
-<section class="tab" id="students">
-<div class="panel">
-<h2>Alunos</h2>
-<p class="muted">A lista será preenchida automaticamente quando os alunos criarem suas contas na plataforma.</p>
-<div class="empty">Nenhum aluno conectado ainda.</div>
-</div>
+<section id="students" class="tab panel">
+<h2>Alunos cadastrados</h2>
+<div id="studentList">Carregando...</div>
 </section>
 
-<section class="tab" id="performance">
-<div class="panel">
-<h2>Desempenho e dificuldades</h2>
-<p class="muted">O painel poderá agrupar os erros por matéria, assunto, questão e aluno, para ajudar a identificar onde a turma precisa reforçar os estudos.</p>
-<div class="empty">Os gráficos de desempenho aparecerão após a chegada dos primeiros resultados.</div>
-</div>
-</section>
-
-<section class="tab" id="quizzes">
-<div class="panel">
+<section id="quizzes" class="tab panel">
 <h2>Criar simulado</h2>
-<p class="muted">Nesta versão, o formulário salva uma lista de rascunhos apenas neste navegador. A publicação para todos os alunos será ativada após a conexão do banco de dados.</p>
-<label for="quizName">Nome do simulado</label>
-<input id="quizName" placeholder="Ex.: Simulado de Matemática 01">
-<label for="quizDescription">Descrição</label>
-<textarea id="quizDescription" placeholder="Conteúdo e orientações do simulado"></textarea>
-<label for="quizTime">Duração (minutos)</label>
-<input id="quizTime" type="number" min="1" value="180">
-<button class="btn" id="saveQuiz">Salvar rascunho</button>
-<h3 style="margin-top:20px">Rascunhos neste dispositivo</h3>
-<ul id="quizList"><li class="muted">Nenhum rascunho salvo.</li></ul>
-</div>
-</section>
+<label>Nome</label>
+<input id="examTitle" placeholder="Ex.: Simulado IFPE 01">
+<label>Descrição</label>
+<input id="examDescription" placeholder="Conteúdos da prova">
+<label>Duração em minutos</label>
+<input id="examDuration" type="number" value="180">
+<button onclick="createExam()">Criar simulado</button>
 
-<section class="tab" id="key">
-<div class="panel">
-<h2>Liberação do gabarito</h2>
-<p class="muted">O gabarito deve ficar armazenado no servidor e só ser disponibilizado aos alunos quando você autorizar. Não coloque respostas secretas no HTML público.</p>
-<div class="empty">Controle de liberação ainda não conectado. Será configurado junto ao banco de dados e às permissões de administrador.</div>
-</div>
+<h3>Simulados cadastrados</h3>
+<div id="examList">Carregando...</div>
+</section>
 </section>
 </main>
+
 <script>
-document.querySelectorAll("nav button").forEach(button=>{
- button.addEventListener("click",()=>{
-  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  button.classList.add("active");
-  document.getElementById(button.dataset.tab).classList.add("active");
- });
-});
-const list=document.getElementById("quizList");
-let drafts=JSON.parse(localStorage.getItem("ifpeAdminDrafts")||"[]");
-function renderDrafts(){
- list.innerHTML="";
- if(!drafts.length){list.innerHTML='<li class="muted">Nenhum rascunho salvo.</li>';return;}
- drafts.forEach(d=>{
-  const li=document.createElement("li");
-  li.textContent=d.name+" — "+d.minutes+" min";
-  list.appendChild(li);
+const SUPABASE_URL = "COLE_AQUI_A_URL_DO_SEU_PROJETO";
+const SUPABASE_KEY = "COLE_AQUI_SUA_CHAVE_PUBLISHABLE";
+
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+function showTab(id){
+ document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
+
+async function login(){
+ const email=document.getElementById("email").value.trim();
+ const password=document.getElementById("password").value;
+ const msg=document.getElementById("message");
+ msg.textContent="Verificando acesso...";
+
+ const {error}=await db.auth.signInWithPassword({email,password});
+ if(error){msg.textContent="Não foi possível entrar. Confira seus dados.";return;}
+ await checkAdmin();
+}
+
+async function checkAdmin(){
+ const {data:{user}}=await db.auth.getUser();
+
+ if(!user){
+  document.getElementById("login").style.display="block";
+  document.getElementById("app").style.display="none";
+  return;
+ }
+
+ const {data:profile,error}=await db
+  .from("profiles")
+  .select("role")
+  .eq("id",user.id)
+  .single();
+
+ if(error || profile.role!=="admin"){
+  await db.auth.signOut();
+  document.getElementById("message").textContent=
+   "Acesso negado: esta conta não é administradora.";
+  return;
+ }
+
+ document.getElementById("login").style.display="none";
+ document.getElementById("app").style.display="block";
+ await loadDashboard();
+}
+
+async function logout(){
+ await db.auth.signOut();
+ location.reload();
+}
+
+async function loadDashboard(){
+ const {data:students}=await db
+  .from("profiles")
+  .select("id")
+  .eq("role","student");
+
+ const {data:attempts}=await db
+  .from("attempts")
+  .select("id");
+
+ document.getElementById("studentCount").textContent=
+  students ? students.length : "—";
+ document.getElementById("attemptCount").textContent=
+  attempts ? attempts.length : "—";
+
+ await loadStudents();
+ await loadExams();
+}
+
+async function loadStudents(){
+ const box=document.getElementById("studentList");
+ const {data,error}=await db
+  .from("profiles")
+  .select("full_name,created_at")
+  .eq("role","student")
+  .order("created_at",{ascending:false});
+
+ if(error){box.textContent="Erro ao carregar alunos.";return;}
+ box.innerHTML="";
+
+ if(!data.length){box.textContent="Nenhum aluno cadastrado.";return;}
+
+ data.forEach(student=>{
+  const div=document.createElement("div");
+  div.className="item";
+  div.textContent=student.full_name || "Aluno sem nome informado";
+  box.appendChild(div);
  });
 }
-document.getElementById("saveQuiz").addEventListener("click",()=>{
- const name=document.getElementById("quizName").value.trim();
- const minutes=Number(document.getElementById("quizTime").value);
- if(!name||!Number.isFinite(minutes)||minutes<1){alert("Informe um nome e uma duração válida.");return;}
- drafts.push({name,description:document.getElementById("quizDescription").value,minutes});
- localStorage.setItem("ifpeAdminDrafts",JSON.stringify(drafts));
- document.getElementById("quizName").value="";
- document.getElementById("quizDescription").value="";
- renderDrafts();
- alert("Rascunho salvo neste dispositivo.");
+
+async function createExam(){
+ const title=document.getElementById("examTitle").value.trim();
+ const description=document.getElementById("examDescription").value.trim();
+ const duration=Number(document.getElementById("examDuration").value);
+
+ if(!title || !Number.isInteger(duration) || duration<1){
+  alert("Informe um nome e uma duração válida.");
+  return;
+ }
+
+ const {error}=await db.from("exams").insert({
+  title:title,
+  description:description,
+  duration_minutes:duration,
+  published:false
+ });
+
+ if(error){alert("Erro ao criar: "+error.message);return;}
+
+ alert("Simulado criado como rascunho!");
+ document.getElementById("examTitle").value="";
+ document.getElementById("examDescription").value="";
+ await loadExams();
+}
+
+async function loadExams(){
+ const box=document.getElementById("examList");
+ const {data,error}=await db
+  .from("exams")
+  .select("*")
+  .order("created_at",{ascending:false});
+
+ if(error){box.textContent="Erro ao carregar simulados.";return;}
+ box.innerHTML="";
+
+ if(!data.length){box.textContent="Nenhum simulado criado.";return;}
+
+ data.forEach(exam=>{
+  const div=document.createElement("div");
+  div.className="item";
+
+  const title=document.createElement("strong");
+  title.textContent=exam.title+" — "+exam.duration_minutes+" min";
+
+  const status=document.createElement("p");
+  status.textContent=exam.published?"Publicado":"Rascunho";
+
+  const publish=document.createElement("button");
+  publish.textContent=exam.published?"Retirar publicação":"Publicar";
+  publish.onclick=()=>updateExam(exam.id,{
+   published:!exam.published
+  });
+
+  const key=document.createElement("button");
+  key.className="secondary";
+  key.textContent=exam.answer_key_released?
+   "Bloquear gabarito":"Liberar gabarito";
+  key.onclick=()=>updateExam(exam.id,{
+   answer_key_released:!exam.answer_key_released
+  });
+
+  div.append(title,status,publish,key);
+  box.appendChild(div);
+ });
+}
+
+async function updateExam(id,changes){
+ const {error}=await db.from("exams").update(changes).eq("id",id);
+ if(error){alert("Erro ao atualizar: "+error.message);return;}
+ await loadExams();
+}
+
+db.auth.onAuthStateChange((event,session)=>{
+ if(event==="SIGNED_OUT"){
+  document.getElementById("login").style.display="block";
+  document.getElementById("app").style.display="none";
+ }
 });
-renderDrafts();
+
+checkAdmin();
 </script>
 </body>
 </html>
