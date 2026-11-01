@@ -34,6 +34,7 @@ nav{display:flex;flex-wrap:wrap;gap:5px}
 <input id="email" type="email" placeholder="Seu e-mail">
 <input id="password" type="password" placeholder="Sua senha">
 <button onclick="login()">Entrar</button>
+ <button class="secondary" onclick="recoverPassword()">Esqueci minha senha</button>
 <p id="message" class="small"></p>
 </section>
 
@@ -93,7 +94,23 @@ async function login(){
  if(error){msg.textContent="Não foi possível entrar. Confira seus dados.";return;}
  await checkAdmin();
 }
+async function recoverPassword(){
+ const email=document.getElementById("email").value.trim();
+ const msg=document.getElementById("message");
 
+ if(!email){
+  msg.textContent="Digite seu e-mail primeiro.";
+  return;
+ }
+
+ const {error}=await db.auth.resetPasswordForEmail(email,{
+  redirectTo:"https://tomlkhf.github.io/Ifpe-2027-/admin.html"
+ });
+
+ msg.textContent=error
+  ? "Erro: "+error.message
+  : "Enviamos um link de recuperação para seu e-mail.";
+}
 async function checkAdmin(){
  const {data:{user}}=await db.auth.getUser();
 
